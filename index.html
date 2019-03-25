@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <title>Simple Webpack App</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300" rel="stylesheet">
+    <script defer src="/bundle.js"></script>
+    <style>
+        body {
+            font-family: 'Open Sans Condensed', sans-serif;
+            background-color: #ffffff;
+            padding: 0;
+            margin: 0;
+        }
+
+        body.day {
+            background-color: #ffffff;
+        }
+
+        body.night {
+            background-color: #242f3e;
+        }
+
+        #charts-buttons {
+            float: left;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        #toogleThemeButton {
+            margin-top: 30px;
+            background: none;
+            border: 0;
+            color: #3393d4;
+            font-size: 18px;
+            outline: none;
+            text-align: left;
+            float: left;
+            width: 100%;
+        }
+
+        #buttons, #charts-buttons {
+            float: left;
+            width: 100%;
+            padding: 10px;
+            padding-bottom: 0px;
+        }
+
+        .button {
+            float: left;
+            border-radius: 25px;
+            border: 1px solid #e3eaee;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        body.night .button {
+            border-color: #2d3c4d
+        }
+
+        .button .icon {
+            float: left;
+            margin: 8px;
+            margin-right: 12px;
+            width: 30px;
+            height: 30px;
+            background-color: #fefefe;
+            border-radius: 100%;
+        }
+
+        .button.enabled .icon {
+            background-image: url('/static/enabled-icon.png');
+        }
+
+        body.night .button .name {
+            color: #fff;
+        }
+
+        .button .name {
+            float: left;
+            font-size: 16px;
+            margin-top: 10px;
+            margin-right: 12px;
+        }
+
+        .chart {
+            float: left;
+            margin-right: 10px;
+            margin-bottom: 20px;
+        }
+
+        body.night table {
+            color: #fff;
+        }
+
+        table td {
+            padding-top: 30px;
+            padding-bottom: 30px;
+            vertical-align: top;
+        }
+        table tr td:first-child {
+            text-align: left;
+            width: 20%;
+        }
+        table tr td:last-child {
+            width: 80%;
+        }
+
+        body.night table tr td {
+            border-bottom: 1px dashed #fff;
+        }
+        table tr td {
+            border-bottom: 1px dashed #000;
+            padding-left: 5px;
+            padding-right: 5px;
+            text-align: center;
+        }
+
+        h1 {
+            font-family: Arial;
+            margin: 0;
+            padding: 0;
+            margin-bottom: 10px;
+            margin-left: 5px;
+            line-height: 20px;
+            font-size: 20px;
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+        .description {
+            margin-bottom: 10px;
+        }
+
+        body.night table.options {
+            color: #000
+        }
+        table.options {
+            background-color: #eee;
+        }
+        table.options td {
+            padding: 5px;
+            font-size: 10px;
+            vertical-align: top;
+        }
+        body.night table.options tr td, body.day table.options tr td {
+            border: 0;
+            padding-left: 5px;
+            padding-right: 5px;
+            text-align: left;
+        }
+
+        input[type="text"] {
+            max-width: 50px;
+        }
+
+    </style>
+</head>
+<body class="day">
+<table>
+    <tr>
+        <td>
+            <h1>Select chart from indexes 0-4</h1>
+            <div id="chart"></div>
+            <div id="buttons"></div>
+            <div id="charts-buttons"></div>
+            <button id="toogleThemeButton">Switch to Night Mode</button>
+        </td>
+        <td style="text-align: left; vertical-align: top">
+            <table class="options">
+                <tr>
+                    <td>
+                        <h2>Settings</h2>
+                        Listening mouse and touch events<br/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="text" placeholder="width" id="widthValue" value="400"/>
+                        x
+                        <input type="text" placeholder="height" id="heightValue" value="400"/>
+                        <button id="setSizeButton">Set size</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="text" placeholder="count" id="linesCountValue" value="10"/>
+                        <button id="setLinesCountButton">Set y axis lines count</button
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="text" placeholder="count" id="paddingValue" value="20"/>
+                        <button id="setPaddingButton">Set padding</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+<pre>
+API:
+------------------------------------------
+import Chart from './chart/Chart'
+
+let el = document.getElementById('#chart')
+let options = {
+    monthes: ['Jan', 'Feb', 'Mar', ...],
+    weekDays: ['Sun', 'Mon', 'Tue', ...],
+    width: 500,
+    height: 500,
+    padding: 10,    // left and right paddings
+    yAxis: {
+        linesCount: 5
+    },
+    callbacks: {
+        graphsCreated: (chart, list) => {
+            // chart = instance of self object
+            //
+            // list - array with info about curves
+            // example of one item from list:
+            // {
+            //    name: 'y0',
+            //    data: [0,23,432...],
+            //    color: '#ffffff'
+            // }
+        },
+        graphsChanged: (chart, list) => {
+            // example of one item from list:
+            // {
+            //    name: 'y0',
+            //    enabled: true,
+            // }
+        }
+    }
+}
+
+// append canvas to el
+let chart = new Chart(el, [options])<br/>
+------------------------------------------
+
+methods:
+chart.setSize(width, height)
+chart.setYLinesCount(count)
+chart.setPadding(val)   // left and right padding
+chart.createFromData(chartsData[index])
+chart.toggleGraph(name) // show/hide curve with name
+chart.destroy()</pre>
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td style="text-align: left; vertical-align: top">
+            <table class="options">
+                <tr>
+                    <td>
+                        <h2>Color themes</h2>
+                    </td>
+                </tr>
+                <tr>
+                    <td><pre>
+/**
+ * Chart color themes
+ * @type Object
+ */
+const themes = {
+    'day': {
+        backgroundColor: '#ffffff',
+        popup: {
+            backgroundColor: '#ffffff',
+            backgroundOpacity: 0.7,
+            dateColor: '#000000',
+            dateFont: {size : 12, family: 'Arial'},
+            axisNameFont: {size : 12, family: 'Arial'},
+            axisValueFont: {size : 16, family: 'Arial'},
+            currentValueLineColor: '#dbe3e9'
+        },
+        yAxis: {
+            textColor: '#818f99',
+            lineColor: '#eaeef2'
+        },
+        xAxis: {
+            textColor: '#88969f'
+        },
+        viewController: {
+            navbar: {
+                backgroundColor: '#ddeaf3',
+                viewportColor: '#ffffff',
+                glassColor: '#dce8ee',
+                glassOpacity: 0.5
+            }
+        }
+    },
+    'night': { ...
+    ...
+}
+// 'day' - selected theme
+chart.setColorThemes(themes, 'day')
+
+// theme - theme name, in current example "day" or "night"
+chart.selectTheme(theme)</pre>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="3">
+            <h1>Chart from index 1</h1>
+            <div id="chart-1"></div>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="3">
+            <h1>Chart from index 2</h1>
+            <div id="chart-2"></div>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="3">
+            <h1>Chart from index 3</h1>
+            <div id="chart-3"></div>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="3">
+            <h1>Chart from index 4</h1>
+            <div id="chart-4"></div>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
